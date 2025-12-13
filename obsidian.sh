@@ -1,8 +1,12 @@
 #!/bin/bash
-TARGET_FOLDER="/Users/bkennedy/Desktop/Obsidian Vault"
+# Get the directory where the script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Configuration
+TARGET_FOLDER="$HOME/Desktop/Obsidian Vault"
 DUPLICACY_PATH="/usr/local/bin/duplicacy"
-LOG_FILE="/usr/local/src/backup_scripts/logs/obsidian_backup.log"
-TIMESTAMP_FILE="/usr/local/src/backup_scripts/obsidian_last_run.txt"
+LOG_FILE="$SCRIPT_DIR/logs/obsidian_backup.log"
+TIMESTAMP_FILE="$SCRIPT_DIR/obsidian_last_run.txt"
 
 # Create log directory if it doesn't exist
 mkdir -p "$(dirname "$LOG_FILE")"
