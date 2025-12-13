@@ -1,6 +1,6 @@
 # Obsidian Backup Script
 
-A simple bash script to backup an Obsidian Vault using [Duplicacy](https://duplicacy.com/).
+A simple bash script to backup an [Obsidian](https://obsidian.md) Vault using [Duplicacy](https://duplicacy.com/).
 
 ## Features
 - **Automated Backups**: Designed to run via `cron` hourly.
