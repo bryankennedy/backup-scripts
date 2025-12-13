@@ -1,0 +1,4 @@
+logs/
+*.log
+obsidian_last_run.txt
+.DS_Store
