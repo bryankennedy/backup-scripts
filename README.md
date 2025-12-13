@@ -17,7 +17,7 @@ A simple bash script to backup an [Obsidian](https://obsidian.md) Vault using [D
    ```
 3. Add to crontab to run hourly (the script manages the daily limit):
    ```bash
-   0 * * * * /usr/local/src/backup_scripts/obsidian.sh
+   0 * * * * /usr/local/src/backup-scripts/obsidian.sh
    ```
 
 ## Usage
