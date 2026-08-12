@@ -2,6 +2,13 @@
 # Get the directory where the script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Load environment variables
+if [ -f "$SCRIPT_DIR/.env" ]; then
+    set -a
+    source "$SCRIPT_DIR/.env"
+    set +a
+fi
+
 # Configuration
 TARGET_FOLDER="$HOME/Desktop/Obsidian Vault"
 DUPLICACY_PATH="/usr/local/bin/duplicacy"

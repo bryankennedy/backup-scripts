@@ -1,4 +1,9 @@
+# Runtime backup logs, not source
 logs/
 *.log
+# Cooldown timestamp written by the script on every run
 obsidian_last_run.txt
+# macOS Finder metadata
 .DS_Store
+# Local environment secrets (GCS token path)
+.env
