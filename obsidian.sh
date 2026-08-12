@@ -17,8 +17,8 @@ if [[ "$1" == "--force" ]]; then
 fi
 
 # Configuration
-TARGET_FOLDER="$HOME/Desktop/Obsidian Vault"
-DUPLICACY_PATH="/usr/local/bin/duplicacy"
+TARGET_FOLDER="$HOME/Obsidian/cephalalgic"
+DUPLICACY_PATH="/opt/homebrew/bin/duplicacy"
 LOG_FILE="$SCRIPT_DIR/logs/obsidian_backup.log"
 TIMESTAMP_FILE="$SCRIPT_DIR/obsidian_last_run.txt"
 
