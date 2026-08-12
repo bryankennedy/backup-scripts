@@ -9,6 +9,13 @@ if [ -f "$SCRIPT_DIR/.env" ]; then
     set +a
 fi
 
+# Check for force flag
+FORCE_RUN=false
+if [[ "$1" == "--force" ]]; then
+    FORCE_RUN=true
+    echo "Force flag detected. Ignoring cooldown."
+fi
+
 # Configuration
 TARGET_FOLDER="$HOME/Desktop/Obsidian Vault"
 DUPLICACY_PATH="/usr/local/bin/duplicacy"
@@ -19,7 +26,7 @@ TIMESTAMP_FILE="$SCRIPT_DIR/obsidian_last_run.txt"
 mkdir -p "$(dirname "$LOG_FILE")"
 
 # Check if we should run the backup (24 hour cooldown)
-if [ -f "$TIMESTAMP_FILE" ]; then
+if [ "$FORCE_RUN" = false ] && [ -f "$TIMESTAMP_FILE" ]; then
     LAST_RUN=$(cat "$TIMESTAMP_FILE")
     CURRENT_TIME=$(date +%s)
     # Simple validation to ensure LAST_RUN is a number
