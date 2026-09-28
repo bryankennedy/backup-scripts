@@ -5,5 +5,7 @@ logs/
 obsidian_last_run.txt
 # macOS Finder metadata
 .DS_Store
-# Local environment secrets (GCS token path)
+# Local environment secrets (GCS token path) and per-machine overrides
 .env
+.env.local
+.env.*.local
