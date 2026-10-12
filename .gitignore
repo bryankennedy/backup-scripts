@@ -9,3 +9,6 @@ obsidian_last_run.txt
 .env
 .env.local
 .env.*.local
+
+# Agent scratchpad — ephemeral task notes, never shared (INFRA-161)
+.agent/scratchpad.md
