@@ -16,6 +16,8 @@ const ENV_PATTERNS = [".env", ".env.local", ".env.*.local"];
 // Concrete names those entries must cover, checked against git itself so a
 // later `!` negation cannot quietly re-include one.
 const ENV_FILES = [".env", ".env.local", ".env.production.local"];
+// Per-machine files house-standards §9 keeps out of every repo (INFRA-177).
+const LOCAL_FILES = [".claude/settings.local.json"];
 
 /** Patterns with no `#` comment in the contiguous (blank-line-bounded) block above them. */
 function undocumentedPatterns(text) {
@@ -47,7 +49,7 @@ describe("gitignore", () => {
     });
   }
 
-  for (const f of ENV_FILES) {
+  for (const f of [...ENV_FILES, ...LOCAL_FILES]) {
     test(`git ignores ${f}`, () => {
       expect(git("check-ignore", "-q", "--no-index", f).exitCode, `${f} is not ignored`).toBe(0);
     });

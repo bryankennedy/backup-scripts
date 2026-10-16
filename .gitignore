@@ -12,3 +12,6 @@ obsidian_last_run.txt
 
 # Agent scratchpad — ephemeral task notes, never shared (INFRA-161)
 .agent/scratchpad.md
+
+# Claude Code local settings — personal preferences, not shared config (house-standards §9, INFRA-177)
+.claude/settings.local.json
