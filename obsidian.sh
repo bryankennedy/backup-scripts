@@ -19,6 +19,12 @@ fi
 # Configuration
 TARGET_FOLDER="$HOME/Obsidian/cephalalgic"
 DUPLICACY_PATH="/opt/homebrew/bin/duplicacy"
+# Duplicacy storage to back up to and prune, from DUPLICACY_STORAGE in .env.
+# When it is empty, duplicacy uses the first storage in its preferences (INFRA-78).
+STORAGE_ARGS=()
+if [ -n "$DUPLICACY_STORAGE" ]; then
+    STORAGE_ARGS=(-storage "$DUPLICACY_STORAGE")
+fi
 LOG_FILE="$SCRIPT_DIR/logs/obsidian_backup.log"
 TIMESTAMP_FILE="$SCRIPT_DIR/obsidian_last_run.txt"
 
@@ -50,7 +56,7 @@ echo "--- Backup Started: $(date) ---" >> "$LOG_FILE"
 
 # STEP 1: RUN THE BACKUP
 # This uploads changes to Google Cloud
-$DUPLICACY_PATH backup -stats >> "$LOG_FILE" 2>&1
+$DUPLICACY_PATH backup "${STORAGE_ARGS[@]}" -stats >> "$LOG_FILE" 2>&1
 
 # STEP 2: APPLY RETENTION POLICY (Grandfather-Father-Son)
 # This deletes old backups to keep your storage small.
@@ -58,7 +64,7 @@ $DUPLICACY_PATH backup -stats >> "$LOG_FILE" 2>&1
 # -keep 30:100 -> If older than 100 days, keep 1 backup every 30 days (Monthly)
 # -keep 7:30   -> If older than 30 days, keep 1 backup every 7 days (Weekly)
 # -keep 1:1    -> If older than 1 day, keep 1 backup every 1 day (Daily)
-$DUPLICACY_PATH prune -keep 30:100 -keep 7:30 -keep 1:1 -a >> "$LOG_FILE" 2>&1
+$DUPLICACY_PATH prune "${STORAGE_ARGS[@]}" -keep 30:100 -keep 7:30 -keep 1:1 -a >> "$LOG_FILE" 2>&1
 
 echo "--- Backup Finished: $(date) ---" >> "$LOG_FILE"
 echo "Backup uploaded"

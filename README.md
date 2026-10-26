@@ -15,7 +15,8 @@ A simple bash script to backup an [Obsidian](https://obsidian.md) Vault using [D
    ```bash
    chmod +x obsidian.sh
    ```
-3. Add to crontab to run hourly (the script manages the daily limit):
+3. Optional: copy `.env.example` to `.env`. Set `DUPLICACY_STORAGE` to back up to and prune a storage other than the first one in `.duplicacy/preferences`. Keep storage passwords in the keychain, not in `.env`.
+4. Add to crontab to run hourly (the script manages the daily limit):
    ```bash
    0 * * * * /usr/local/src/backup-scripts/obsidian.sh
    ```
