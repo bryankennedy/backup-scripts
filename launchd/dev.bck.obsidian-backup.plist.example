@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  LaunchAgent template for obsidian.sh. See "Schedule with launchd" in README.md.
+
+  Replace every __CLONE__ with the absolute path of this repository on the
+  machine, for example with sed. Install the result as
+  ~/Library/LaunchAgents/dev.bck.obsidian-backup.plist.
+
+  The job runs at minute 0 of every hour. The script keeps its own 24-hour
+  cooldown, so one run per day uploads and the rest exit at once. launchd runs
+  a missed slot once after the machine wakes.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>dev.bck.obsidian-backup</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>__CLONE__/obsidian.sh</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>__CLONE__/logs/launchd.log</string>
+    <key>StandardErrorPath</key>
+    <string>__CLONE__/logs/launchd.log</string>
+</dict>
+</plist>
