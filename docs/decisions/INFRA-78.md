@@ -10,7 +10,7 @@ We did not rename the new storage to `default` in the preferences file. Duplicac
 
 The storage password stays in the macOS keychain and in 1Password. It is never in `.env`, because `.env` is a plaintext file.
 
-The new storage is created with `add -e -copy` from the unencrypted one, so the copy keeps the same chunk boundaries. Duplicacy then inherits the default chunk seed and hash key. The chunk contents and the chunk IDs use random keys and stay protected. Only the chunk boundaries are predictable. We accept this, because `copy` needs compatible storages to keep the revision history.
+The owner made the new storage from the unencrypted one, so that the revision history stays. That leaves a known, limited weakness. The owner accepted it in INFRA-329, because every resource on this path is private. The detail is in the owner's private findings file (INFRA-332), and the baseline entry is in `docs/security-baseline.md`. This paragraph was cut on 2026-11-05 (INFRA-333).
 
 The migration and the cleanup are owner steps on the machine that holds the vault. The runbook is a comment on INFRA-78 in Progress.
 
