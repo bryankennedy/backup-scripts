@@ -6,6 +6,8 @@ A simple bash script to backup an [Obsidian](https://obsidian.md) Vault using [D
 - **Automated Backups**: Designed to run hourly from `launchd` on macOS.
 - **Daily Frequency**: Ensures backups only happen once every 24 hours, even if the script is called more often.
 - **Retention Policy**: Automatically prunes old backups (Grandfather-Father-Son strategy).
+- **Storage Check**: Runs `duplicacy check` after every backup, so a revision with a missing chunk fails the run.
+- **Loud Failure**: A failed step exits with duplicacy's exit code, logs `Backup Failed`, and does not stamp the cooldown. The next hourly slot retries.
 - **Logging**: Tracks runs in `logs/obsidian_backup.log`.
 
 ## Setup
@@ -15,7 +17,7 @@ A simple bash script to backup an [Obsidian](https://obsidian.md) Vault using [D
    ```bash
    chmod +x obsidian.sh
    ```
-3. Optional: copy `.env.example` to `.env`. Set `DUPLICACY_STORAGE` to back up to and prune a storage other than the first one in `.duplicacy/preferences`. Keep storage passwords in the keychain, not in `.env`.
+3. Optional: copy `.env.example` to `.env`. Set `DUPLICACY_STORAGE` to back up to, prune and check a storage other than the first one in `.duplicacy/preferences`. Set `TARGET_FOLDER` or `DUPLICACY_PATH` if your paths differ from the defaults in the script. Keep storage passwords in the keychain, not in `.env`.
 4. Schedule the hourly run with `launchd`. See the next section.
 
 ## Schedule with launchd
@@ -62,7 +64,7 @@ If an older copy of the agent is loaded, run the unload command first.
 launchctl print gui/$(id -u)/dev.bck.obsidian-backup | grep -E 'state|last exit'
 ```
 
-Expected: `state = not running` between runs. The exit code is `(never exited)` before the first run and `0` after it. The exit code only shows that the script ran. The script does not pass on duplicacy's exit code yet, so read the log to see the result.
+Expected: `state = not running` between runs. The exit code is `(never exited)` before the first run and `0` after a passing run. A failed backup, prune or check exits with duplicacy's exit code, which is `100` for most errors. On a failure, read the log.
 
 To run the job now and not wait for the next hour:
 
@@ -70,13 +72,15 @@ To run the job now and not wait for the next hour:
 launchctl kickstart gui/$(id -u)/dev.bck.obsidian-backup
 ```
 
-Then check the log. The run either uploads or logs a cooldown skip.
+Then check the log. The run either uploads, logs a cooldown skip, or logs a failure.
 
 ```bash
-grep -E 'Backup Started|Backup Skipped|ERROR|password|revision [0-9]+ completed' logs/obsidian_backup.log | tail -5
+grep -E 'Backup Started|Backup Skipped|Backup Failed|Backup Finished|ERROR|password|revision [0-9]+ completed|are missing' logs/obsidian_backup.log | tail -6
 ```
 
-Expected: a `Backup Started` line and then a `revision N completed` line, or a `Backup Skipped` line. There must be no `ERROR` line and no `password` line. `logs/launchd.log` holds the script's own output, for example `Backup uploaded`.
+Expected: a `Backup Started` line, a `revision N completed` line and a `Backup Finished` line, or a `Backup Skipped` line. There must be no `Backup Failed`, `ERROR`, `password` or `are missing` line. `logs/launchd.log` holds the script's own output, for example `Backup uploaded` or `Backup failed at step 'check'`.
+
+A failed run does not write the cooldown stamp, so the job retries at the next hour and logs the failure again. Fix the cause, then run the job by hand with `./obsidian.sh --force` to confirm.
 
 ### Unload
 
@@ -91,4 +95,10 @@ Run manually to check status:
 ```bash
 ./obsidian.sh
 ```
-Output will indicate if a backup was uploaded or skipped due to the cooldown.
+The output says whether the backup was uploaded, skipped because of the cooldown, or failed at the backup, prune or check step. The exit code is `0` for an upload or a skip and duplicacy's exit code for a failure.
+
+## Test
+```bash
+bun test
+```
+The tests run `obsidian.sh` against a fake duplicacy in a temp dir, and hold the `.gitignore` rule in place. They need no network and no storage.
