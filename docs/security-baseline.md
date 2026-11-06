@@ -21,6 +21,15 @@ It is accepted, not rewritten, because the name no longer leads anywhere. The ba
 
 **Re-verify, do not re-decide.** This expires if the named bucket is deleted or holds objects again, or if the new bucket's name appears anywhere in this repository. That name belongs only in the local duplicacy configuration inside the backed-up folder, which this repository does not track.
 
+### A commit message says the backup's storage is not encrypted
+*Accepted 2026-11-06 (INFRA-280).*
+
+The message of commit `3baa66d` says, in the present tense, that the vault's duplicacy storage is not encrypted. That was true on 2026-10-26, when the commit was made. It stopped being true on 2026-11-06, when the owner deleted the plaintext chunks, snapshots and config from the bucket (INFRA-281). Only the encrypted storage remains, and the local duplicacy preferences list only that storage. `docs/decisions/INFRA-78.md` records the cutover in the past tense.
+
+It is accepted, not rewritten, because published history cannot be rewritten, and the text no longer describes anything that exists. The bucket name is not in the message. The bucket refuses public access, which the owner checked on 2026-11-06.
+
+**Re-verify, do not re-decide.** This expires if an unencrypted storage for this backup holds objects again, or if a document in this repository says the live storage is unencrypted in the present tense.
+
 ## Accepted — encryption
 
 ### The encrypted storage was made from the unencrypted one

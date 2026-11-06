@@ -2,9 +2,9 @@
 
 *Decided 2026-10-26.*
 
-The vault's first duplicacy storage was set up without encryption. Duplicacy cannot encrypt a storage in place, so the owner adds a second, encrypted storage, copies the revisions to it and then deletes the old chunks.
+The vault's first duplicacy storage was set up without encryption. Duplicacy cannot encrypt a storage in place, so the owner added a second, encrypted storage, copied the revisions to it and then deleted the old chunks. The delete finished on 2026-11-06 (INFRA-281).
 
-`obsidian.sh` now passes `-storage "$DUPLICACY_STORAGE"` to `backup` and `prune` when `.env` sets that value. When the value is empty, the script passes no `-storage` flag, and duplicacy uses the first storage in its preferences. Without a `.env` setting, the script behaves as before. After the old storage is removed from the preferences, the encrypted storage is the first one, so a lost `.env` does not stop the backup.
+`obsidian.sh` now passes `-storage "$DUPLICACY_STORAGE"` to `backup` and `prune` when `.env` sets that value. When the value is empty, the script passes no `-storage` flag, and duplicacy uses the first storage in its preferences. Without a `.env` setting, the script behaves as before. Since 2026-11-06 the preferences hold only the encrypted storage, so a lost `.env` does not stop the backup.
 
 We did not rename the new storage to `default` in the preferences file. Duplicacy keys its saved keychain entries and its environment variables by the storage name, so a rename makes duplicacy ask for the passwords again. A prompt in an unattended cron run stops the backup.
 
@@ -12,7 +12,7 @@ The storage password stays in the macOS keychain and in 1Password. It is never i
 
 The owner made the new storage from the unencrypted one, so that the revision history stays. That leaves a known, limited weakness. The owner accepted it in INFRA-329, because every resource on this path is private. The detail is in the owner's private findings file (INFRA-332), and the baseline entry is in `docs/security-baseline.md`. This paragraph was cut on 2026-11-05 (INFRA-333).
 
-The migration and the cleanup are owner steps on the machine that holds the vault. The runbook is a comment on INFRA-78 in Progress.
+The migration and the cleanup were owner steps on the machine that holds the vault. The runbook is a comment on INFRA-78 in Progress, and the result is on INFRA-281. On the day of the cleanup, a check found that one chunk of revision 160 never reached the encrypted storage, although the job had logged that revision as complete. The owner removed revisions 160 and 161. INFRA-334 adds a check to the job so that the job finds this itself.
 
 ### INFRA-78b — Run the backup from launchd, not cron
 
